@@ -1,11 +1,11 @@
 from rest_framework import generics , permissions , status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Product, Category, ActiveBids
-from .serializers import productSerializer, categorySerializer, activeBidsSerializer
+from .models import product, Product_Category
+from .serializers import productSerializer, categorySerializer
 import datetime
-class productList(generics.ListAPiView):
-    queryset = Product.objects.all()
+class productList(generics.ListAPIView):
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.AllowAny,)
 
@@ -19,15 +19,15 @@ class productList(generics.ListAPiView):
         serializer = self.get_serializer(self.queryset, many=True)
         return Response(serializer.data)
 
-class UserProductList(generics.ListAPiView):
-    queryset = Product.objects.all()
+class UserProductList(generics.ListAPIView):
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.IsAuthenticated,)
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
         
 class ProductListCreate(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.IsAuthenticated,)
 
@@ -36,7 +36,7 @@ class ProductListCreate(generics.ListCreateAPIView):
 
 
 class UserProductUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.IsAuthenticated,)
     def get_queryset(self):
@@ -45,35 +45,37 @@ class UserProductUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UserProductBid(APIView):
-    queryset = Product.objects.all()
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.IsAuthenticated,)
     def get_queryset(self):
         return self.queryset.all()
     def post(self, request, *args, **kwargs):
         product_id = request.data.get("product_id")
-        product = Product.objects.get(id=product_id)
+        product = product.objects.get(id=product_id)
         product.Bid_Current_price = request.data.get("Bid_Current_price")
         self.save()
         product.save()
-        product.last_bid_time = Product.objects.filter(product=self).latest('time').time
+        product.last_bid_time = product.objects.filter(product=self).latest('time').time
         product.save()
         return Response(status=status.HTTP_200_OK)
     def check_status(self):
         if self.last_bid_time + datetime.timedelta(hours=24) < datetime.datetime.now():
             self.status = 'S'
-            Product.sold_to = Product.objects.filter(product=self).latest('time').user
-            Product.save()
+            product.sold_to = product.objects.filter(product=self).latest('time').user
+            product.save()
             self.save()
         else:
             self.status = 'A'
             self.save()
    
 
-class UserProductBought(generics.ListAPiView):
-    queryset = Product.objects.all()
+class UserProductBought(generics.ListAPIView):
+    queryset = product.objects.all()
     serializer_class = productSerializer
     permissions = (permissions.IsAuthenticated,)
     def get_queryset(self):
         return self.queryset.filter(sold_to=self.request.user)
+
+
 

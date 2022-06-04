@@ -1,17 +1,12 @@
 from rest_framework import serializers
-from .models import Product, Category, ActiveBids
+from .models import product , Product_Category
 
 class productSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = product
         fields = "__all__"
     
 class categorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
-        fields = "__all__"
-
-class activeBidsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ActiveBids
+        model = product
         fields = "__all__"

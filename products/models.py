@@ -30,22 +30,11 @@ class product(models.Model):
     )
     status = models.CharField(max_length=100, default='open')
     last_bid_time = models.DateTimeField()
+    fav_users = models.ManyToManyField(User, blank=True , related_name='fav_users')
 
     def __str__(self):
         return self.Name
 
-
-
-
-
-class ActiveBids(models.Model):
-    product = models.ForeignKey(product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.IntegerField()
-    date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return str(self.price) + " " + str(self.product.Name)
 
 
     
