@@ -11,3 +11,4 @@ urlpatterns = [
     path('my_products/successful_bids/', UserProductBought.as_view()),
     path('products/bids/<int:pk>', UserProductBid.as_view())
 ]
+
