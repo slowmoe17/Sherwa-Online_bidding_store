@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .models import product, Product_Category
 from .serializers import productSerializer, categorySerializer
 import datetime
+from django.http import HttpResponse, request ,HttpRequest
 class productList(generics.ListAPIView):
     queryset = product.objects.all()
     serializer_class = productSerializer
@@ -76,6 +77,28 @@ class UserProductBought(generics.ListAPIView):
     permissions = (permissions.IsAuthenticated,)
     def get_queryset(self):
         return self.queryset.filter(sold_to=self.request.user)
+
+class FavoriteListAddDelete(APIView):
+    queryset = product.objects.all()
+    serializer_class = productSerializer
+    permissions = (permissions.IsAuthenticated,)
+    def get_queryset(self):
+        return self.queryset.filter(fav_users=self.request.user)
+    def post(self, request, *args, **kwargs):
+        product_id = request.data.get("product_id")
+        product = product.objects.get(id=product_id)
+        product.fav_users.add(self.request.user)
+        product.save()
+        return Response(status=status.HTTP_200_OK)
+    def delete(self, request, *args, **kwargs):
+        product_id = request.data.get("product_id")
+        product = product.objects.get(id=product_id)
+        product.fav_users.remove(self.request.user)
+        product.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+
 
 
 

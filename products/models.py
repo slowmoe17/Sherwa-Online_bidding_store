@@ -6,7 +6,7 @@ import datetime
 
 
 class Product_Category(models.Model):
-    products = models.ManyToManyField('Product', blank=True)
+    products = models.ManyToManyField('product', blank=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
 
@@ -14,6 +14,7 @@ class Product_Category(models.Model):
         return self.name
 
 class product(models.Model):
+    fav_users = models.ManyToManyField(User, blank=True,related_name='fav_users')
     Owner = models.ForeignKey(User, on_delete=models.CASCADE)
     sold_to = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='sold_to')
     Name=models.CharField(max_length=100)
@@ -30,12 +31,8 @@ class product(models.Model):
     )
     status = models.CharField(max_length=100, default='open')
     last_bid_time = models.DateTimeField()
-    fav_users = models.ManyToManyField(User, blank=True , related_name='fav_users')
-
     def __str__(self):
         return self.Name
-
-
 
     
 
