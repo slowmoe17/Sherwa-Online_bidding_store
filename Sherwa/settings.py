@@ -79,9 +79,13 @@ WSGI_APPLICATION = 'Sherwa.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.PostgreSQL',
-        'NAME': BASE_DIR / 'PostgreSQL',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "lareserves",
+        "USER": "postgres",
+        "PASSWORD": "root",
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
 
